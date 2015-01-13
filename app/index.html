@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="exprApp">
+<head>
+	<meta charset="UTF-8">
+	<title>PhoneCat</title>
+	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+	<!-- <link rel="stylesheet" href="css/app.css"> -->
+	<script src="../bower_components/angular/angular.js"></script>
+</head>
+<body>
+	<p>nothing here {{ 'yet'+'!' }}</p>
+	<p>1+2={{1+2}}</p>
+	<div id="expressions" ng-controller="exprController">
+		Expression:
+		<input type="text" ng-model="expr">
+		<button ng-click="addExpr(expr)">Evaluate</button>
+		<ul>
+			<li ng-repeat="expr in exprs track by $index">
+				[<a href="" ng-click="removeExpr($index)">X</a>]
+				{{expr}} => <span ng-bind="$parent.$eval(expr)"></span>
+			</li>
+		</ul>
+	</div>
+	<div id="context" ng-controller="contextController">
+		Name:
+		<input type="text" ng-model="name">
+		<button ng-click="greet()">Greet</button>
+		<button ng-click="window.alert('Should not see me!')">Won't greet</button>
+	</div>
+	<script>
+		angular.module('exprApp', [])
+		.controller('exprController', function($scope) {
+			var exprs = $scope.exprs = [];
+			$scope.expr = '3*10|currency';
+			$scope.addExpr = function(expr) {
+				exprs.push(expr);
+			};
+			$scope.removeExpr = function(index) {
+				exprs.splice(index, 1);
+			};
+		})
+		.controller('contextController', function($scope, $window) {
+			$scope.name = 'World';
+			$scope.greet = function() {
+				$window.alert('Hello ' + $scope.name);
+			};
+		});
+	</script>
+</body>
+</html>
